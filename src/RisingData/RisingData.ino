@@ -4,6 +4,7 @@
 #include <SparkFunLSM9DS1.h>
 
 const int SDSelect = 10;
+const int LedPin = 3;
 LSM9DS1 NineDoF;
 #define LSM9DS1_M  0x1E 
 #define LSM9DS1_AG  0x6B 
@@ -16,6 +17,7 @@ void setup() {
   init_9DoF();
   write_header();
   Serial.println("Starting Data Aquisition...");
+  pinMode(LedPin, OUTPUT); 
 }
 
 void init_SD(){
@@ -37,7 +39,7 @@ void init_9DoF(){
     Serial.println("Initialization Failed"); 
     while (1);
   }
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
   if (dataFile) {
     dataFile.println();
   }
@@ -78,14 +80,17 @@ void loop() {
   Write(NineDoF.calcMag(NineDoF.mx));  
   Write(NineDoF.calcMag(NineDoF.my));
   WriteEnd(NineDoF.calcMag(NineDoF.mz));
-  
-  delay(100);
+
+  digitalWrite(LedPin, HIGH);
+  delay(50);
+  digitalWrite(LedPin, LOW);
+  delay(50);
 }
 
 void Write(const char* value){
   Serial.print(value); 
   Serial.print(",");
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
   if (dataFile) {
     dataFile.print(value);
     dataFile.print(",");
@@ -96,7 +101,7 @@ void Write(const char* value){
 void Write(float value){
   Serial.print(value); 
   Serial.print(",");
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
   if (dataFile) {
     dataFile.print(value);
     dataFile.print(",");
@@ -106,7 +111,7 @@ void Write(float value){
 void WriteEnd(const char* value){
   Serial.print(value);  
   Serial.print("\n"); 
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
   if (dataFile) {
     dataFile.print(value);
     dataFile.println();
@@ -116,7 +121,7 @@ void WriteEnd(const char* value){
 void WriteEnd(float value){
   Serial.print(value);  
   Serial.print("\n"); 
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
   if (dataFile) {
     dataFile.print(value);
     dataFile.println();
