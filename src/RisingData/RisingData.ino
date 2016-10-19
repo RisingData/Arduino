@@ -3,13 +3,11 @@
 #include <Wire.h>
 #include <SparkFunLSM9DS1.h>
 
-const int SDSelect = 10;
 const int LedPin = 3;
+const int chipSelect = 10;
 LSM9DS1 NineDoF;
-#define LSM9DS1_M  0x1E 
-#define LSM9DS1_AG  0x6B 
-#define DECLINATION 13 
-
+#define MAG_ADDRESS  0x1E 
+#define AG_ADDRESS  0x6B 
 
 void setup() {
   Serial.begin(115200);
@@ -22,7 +20,7 @@ void setup() {
 
 void init_SD(){
   Serial.println("Initializing SD card..."); 
-  if (!SD.begin(SDSelect)) {
+  if (!SD.begin(chipSelect)) {
     Serial.println("Initialization Failed"); 
     while (1);
   }
@@ -32,8 +30,8 @@ void init_SD(){
 void init_9DoF(){
   Serial.println("Initializing 9DoF..."); 
   NineDoF.settings.device.commInterface = IMU_MODE_I2C;
-  NineDoF.settings.device.mAddress = LSM9DS1_M;
-  NineDoF.settings.device.agAddress = LSM9DS1_AG;
+  NineDoF.settings.device.mAddress = MAG_ADDRESS;
+  NineDoF.settings.device.agAddress = AG_ADDRESS;
   if (!NineDoF.begin())
   {
     Serial.println("Initialization Failed"); 
@@ -128,8 +126,4 @@ void WriteEnd(float value){
     dataFile.close();   
   }
 }
-
-
-
-
 
